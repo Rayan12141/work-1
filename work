@@ -1,0 +1,40 @@
+import time
+import os
+
+def create_file(file_name):
+    time.sleep(1)
+    with open(file_name, 'w') as f:
+        f.write("This is a test file.")
+
+import time
+
+start_time = time.time()
+
+for i in range(100):
+    create_file(f"file_{i}.txt")
+
+end_time = time.time()
+
+print(f"Время выполнения (без многопоточности): {end_time - start_time} секунд")
+
+
+import concurrent.futures
+import time
+
+def create_file_with_delay(file_name):
+    time.sleep(1)
+    with open(file_name, 'w') as f:
+        f.write("This is a test file.")
+
+start_time = time.time()
+
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    futures = [executor.submit(create_file_with_delay, f"file_{i}.txt") for i in range(100)]
+
+# Дожидаемся завершения всех задач
+for future in concurrent.futures.as_completed(futures):
+    pass
+
+end_time = time.time()
+
+print(f"Время выполнения (с многопоточностью): {end_time - start_time} секунд")
